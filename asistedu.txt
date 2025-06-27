@@ -35,7 +35,7 @@
     <meta property="og:locale" content="id_ID" />
     <link rel="shortcut icon" href="https://yourimageshare.com/ib/EVgcaa3mYS.png" />
     <link rel="canonical" href="https://asist.edu.ph/" />
-    <link rel="amphtml" href="https://morfin.pages.dev/amp/dana" />
+    <link rel="amphtml" href="https://morfin.pages.dev/amp/dana/" />
     <meta name="keywords" content="Slot Dana, Slot Dana Gacor, Slot X1000, Slot Scatter Hitam, Slot Gacor, Slot Gacor Dana" />
     <!-- sp:end-feature:head-start -->
     <!-- sp:feature:csm:head-open-part1 -->
