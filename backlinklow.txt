@@ -30,5 +30,7 @@
         <li><a href="https://unilinktransportes.com.br/noticias/">morfintoto</a></li>
         <li><a href="https://abihv.org.br/associados/">morfintoto</a></li>
         <li><a href="https://dui.edu.ng/">situs toto</a></li>
+        <li><a href="https://pgs.dui.edu.ng/">situs toto</a></li>
+        <li><a href="https://auditing.dui.edu.ng/">situs toto</a></li>
     </ul>
 </div>
