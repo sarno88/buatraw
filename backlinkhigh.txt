@@ -33,5 +33,7 @@
         <li><a href="https://hris-bd.rescue.org/assets/">situs toto</a></li>
         <li><a href="https://unilinktransportes.com.br/noticias/">morfin toto</a></li>
         <li><a href="https://dui.edu.ng/">situs toto</a></li>
+        <li><a href="https://pgs.dui.edu.ng/">situs toto</a></li>
+        
     </ul>
 </div>
