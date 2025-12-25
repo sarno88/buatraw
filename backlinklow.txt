@@ -24,5 +24,7 @@
        <li><a href="http://recicla.juntaex.es/contacto/">http://recicla.juntaex.es/contacto/</a></li>
        <li><a href="https://avaliacao.area.scielo.br/">situs toto</a></li>
        <li><a href="https://medwinpublishers.com/IZAB/">situs toto</a></li>
+       <li><a href="https://epis.caeb.es/">morfintoto</a></li>
+       <li><a href="https://anpe-balears.org/">morfintoto</a></li>
     </ul>
 </div>
