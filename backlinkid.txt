@@ -19,5 +19,6 @@
        <li><a href="https://medwinpublishers.com/IZAB/">situs toto</a></li>
        <li><a href="https://epis.caeb.es/">morfintoto</a></li>
        <li><a href="https://anpe-balears.org/">morfintoto</a></li>
+       <li><a href="http://www.scielo.org.pe/">morfintoto</a></li>
     </ul>
 </div>
